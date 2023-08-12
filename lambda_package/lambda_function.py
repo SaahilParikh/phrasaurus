@@ -1,4 +1,4 @@
-mport json
+import json
 import boto3
 import openai
 from botocore.exceptions import ClientError
