@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phrasaurus</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dosis:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+body {
+    background-color: #77DD77;
+    color: #FFFFFF; /* General Text Color */
+    font-family: 'Dosis', sans-serif;
+}
+
+h2 {
+    font-size: 3em;
+}
+
+p {
+    font-size: 1.5em;
+}
+
+.input-box, .button {
+    font-size: 1.2em;
+}
+
+
+.input-box {
+    background-color: #48bf31;
+    font-size: 3.2em; /* or your desired size */
+    font-weight: bold;  
+    color: #FFFFFF;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    width: 80%; /* or your desired width */
+    margin: 0 auto;
+}
+
+.input-box:focus {
+    outline: none;
+    font-weight: bold;  
+    box-shadow: 0 0 5px #FF964F; /* using the button color for consistency */
+}
+
+.input-box::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+    font-size: 1.4em;       /* Increased font size */
+    font-weight: bold;      /* Make it bold */
+    color: #FFFFFF;         /* Change the color to a light coral color for contrast */
+    opacity: 1;             /* Full opacity */
+}
+
+.input-box:-ms-input-placeholder { /* Internet Explorer 10-11 */
+    font-size: 1.4em;
+    font-weight: bold;
+    color: #FF964F;
+}
+
+.input-box::-ms-input-placeholder { /* Microsoft Edge */
+    font-size: 1.4em;
+    font-weight: bold;
+    color: #FF964F;
+}
+
+
+.button {
+    background-color: #FF964F;
+    color: #FFFFFF;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.button:hover {
+    color: #f8dfc8;
+    background-color: #EE9070; /* A slightly darker coral on hover for effect */
+}
+
+.button:active {
+    background-color: #E47A50; /* slightly darker than the hover color */
+}
+
+output-phrase {
+    color: #641616;
+    width: 95vw;
+    font-size: 3.2em; /* or your desired size */
+    margin-top: 20px;
+}
+
+.highlight {
+    background-color: #FFDAB9;
+    padding: 2px 5px;
+    border-radius: 3px;
+}
+
+    @media (max-width: 576px) {
+        .input-box {
+            width: 100%;
+            margin-bottom: 10px; /* space between the input and button */
+    }
+    
+    .d-flex {
+        flex-direction: column; /* stack input and button vertically on small screens */
+        align-items: center;
+        }
+     }
+
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+
+        .typewriter {
+            display: inline-block;
+            overflow: hidden;
+            border-right: .15em solid #FFFFFF;
+            white-space: nowrap;
+            animation: blink .5s step-end infinite alternate;
+        }
+
+        @keyframes blink {
+            from, to { border-color: transparent }
+            50% { border-color: #FFFFFF; }  /* Matches your text color */
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container d-flex flex-column justify-content-center" style="height: 100vh;">
+        <div class="text-center">
+            <p class="typewriter"></p>
+            <div class="d-flex justify-content-center mt-4">
+                <input type="text" class="input-box" placeholder="">
+                <button class="button ml-2" onclick="generateSynonym()">➤</button>
+            </div>
+            <p class="output-phrase mt-4 typewriter" id="outputPhrase"></p>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        document.querySelector('.input-box').addEventListener('keyup', function(event) {
+            if (event.keyCode === 13) {
+                generateSynonym();
+            }
+        });
+
+        // Create a list (array) of strings
+        const stringList = ["Provide a phrase and receive a synonymous alternative", "A minimalistic thesaurus for phrases", "A minimalistic thesaurus for phrases", "A phrase synonym repository", "Phrase equivalent compendium", "A minimalistic thesaurus for phrases", "A dinosaur that eats phrases"];
+
+        // Function to get a random string from the list
+        function getRandomString() {
+            const randomIndex = Math.floor(Math.random() * stringList.length);
+            return stringList[randomIndex];
+        }
+
+        let text2 = "Phrasaurus";
+        let output = getRandomString()
+        let index2 = 0;
+        let indexOutput = 0;
+        let paragraphElement = document.querySelector('input');
+        const outputElement = document.getElementById('outputPhrase');
+
+        function typeText() {
+           if(index2 < text2.length) {
+                paragraphElement.placeholder += text2.charAt(index2);
+                index2++;
+            } 
+        
+            if(indexOutput < output.length) {
+                outputElement.textContent += output.charAt(indexOutput);
+                indexOutput++;
+            } 
+            else {
+                clearInterval(typingInterval);
+            }
+        }
+
+        let typingInterval = setInterval(typeText, 10);
+
+        function fillPhrasaurus() {
+            let output = getRandomString()
+            let indexOutput = 0;
+            const outputElement = document.getElementById('outputPhrase');
+            outputElement.textContent = '';
+            function outputText () {
+                if(indexOutput < output.length) {
+                    outputElement.textContent += output.charAt(indexOutput);
+                    indexOutput++;
+                } 
+                else {
+                    clearInterval(typingInterval);
+                }
+            }
+            let typingInterval = setInterval(outputText, 10);
+        }
+        
+        function generateSynonym() {
+            const inputPhrase = document.querySelector('.input-box').value.trim();
+
+            if (inputPhrase === "") {
+                return fillPhrasaurus()
+            }
+
+            fetch('https://phrasaurus.com/api/v1', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ phrase: inputPhrase })  // Assuming the API expects a JSON with a "phrase" field
+            })
+            .then(response => response.json())  // Parse the response as JSON
+            .then(data => {
+                const output = data.synonym || "Sorry, no synonym found!";
+
+                // Typing Effect for Output
+                let indexOutput = 0;
+                const outputElement = document.getElementById('outputPhrase');
+                outputElement.textContent = '';
+                function typeOutput() {
+                    if(indexOutput < output.length) {
+                        outputElement.textContent += output.charAt(indexOutput);
+                        indexOutput++;
+                    } else {
+                        clearInterval(outputTypingInterval);
+                    }
+                }
+                let outputTypingInterval = setInterval(typeOutput, 20);
+            })
+            .catch(error => {
+                console.error("Error fetching synonym:", error);
+
+                // Typing Effect for Output
+                let indexOutput = 0;
+                const outputElement = document.getElementById('outputPhrase');
+                outputElement.textContent = '"Error fetching synonym!"';
+            });
+        }
+    </script>
+</body>
+
+</html>
