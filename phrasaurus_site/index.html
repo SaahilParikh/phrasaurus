@@ -29,13 +29,13 @@ p {
 
 .input-box {
     background-color: #48bf31;
-    font-size: 3.2em; /* or your desired size */
+    font-size: 3em; /* or your desired size */
     font-weight: bold;  
     color: #FFFFFF;
     border: none;
     padding: 10px 15px;
     border-radius: 5px;
-    width: 80%; /* or your desired width */
+    /* width: 50%; or your desired width */
     margin: 0 auto;
 }
 
@@ -84,12 +84,7 @@ p {
     background-color: #E47A50; /* slightly darker than the hover color */
 }
 
-output-phrase {
-    color: #641616;
-    width: 95vw;
-    font-size: 3.2em; /* or your desired size */
-    margin-top: 20px;
-}
+
 
 .highlight {
     background-color: #FFDAB9;
@@ -105,6 +100,7 @@ output-phrase {
     
     .d-flex {
         flex-direction: column; /* stack input and button vertically on small screens */
+        justify-content: center;
         align-items: center;
         }
      }
@@ -152,7 +148,7 @@ output-phrase {
         });
 
         // Create a list (array) of strings
-        const stringList = ["Provide a phrase and receive a synonymous alternative", "A minimalistic thesaurus for phrases", "A minimalistic thesaurus for phrases", "A phrase synonym repository", "Phrase equivalent compendium", "A minimalistic thesaurus for phrases", "A dinosaur that eats phrases"];
+        const stringList = ["A minimalistic thesaurus for phrases", "A minimalistic thesaurus for phrases", "A phrase synonym repository", "Phrase equivalent compendium", "A minimalistic thesaurus for phrases", "A dinosaur that eats phrases"];
 
         // Function to get a random string from the list
         function getRandomString() {
