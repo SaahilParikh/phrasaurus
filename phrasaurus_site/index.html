@@ -128,7 +128,7 @@
     <main class="container d-flex flex-column justify-content-center" style="height: 100vh;">
         <div class="text-center">
             <div class="d-flex justify-content-center mt-4 mid-wrapper">
-                <textarea oninput="autogrow(this)" id="input" onload="fillInputBox()" class="input-box" maxlength="100" placeholder=""></textarea>
+                <textarea oninput="autogrow(this)" id="input" class="input-box" maxlength="100" placeholder=""></textarea>
                 <button class="button ml-2" onclick="generateSynonym()" id="searchButton">
                     <span id="buttonText">➤</span>
                     <div class="spinner-grow spinner-grow-sm d-none" id="loadingSpinner" role="status">
@@ -136,7 +136,7 @@
                     </div>
                 </button>                
             </div>
-            <p class="output-phrase mt-4 typewriter" id="outputPhrase" onload="fillPhrasaurus()"></p>
+            <p class="output-phrase mt-4 typewriter" id="outputPhrase"></p>
               
         </div>
     </main>
