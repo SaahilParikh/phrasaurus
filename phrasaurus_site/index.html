@@ -22,22 +22,40 @@ p {
     font-size: 1.5em;
 }
 
-.input-box, .button {
-    font-size: 1.2em;
+textarea {
+    height: fit-content;
+    word-wrap: break-word;
+    resize: none;
+    overflow: hidden;
 }
 
+textarea::placeholder {
+    transform: translateY(-15px);
+}
 
-.input-box {
+#input {
+    margin: 0;
+    padding: 0;
+    height: 75px;
     background-color: #48bf31;
     font-size: 3em; /* or your desired size */
     font-weight: bold;  
     color: #FFFFFF;
     border: none;
-    padding: 10px 15px;
     border-radius: 5px;
-    /* width: 50%; or your desired width */
-    margin: 0 auto;
 }
+
+.grow-wrap {
+    display: grid;
+}
+
+.button {
+    font-size: 1.2em;
+}
+.mid-wrapper {
+    gap: 100px
+}
+
 
 .input-box:focus {
     outline: none;
@@ -71,7 +89,6 @@ p {
     border: none;
     padding: 10px 20px;
     border-radius: 5px;
-    cursor: pointer;
     transition: background-color 0.3s ease;
 }
 
@@ -99,9 +116,9 @@ p {
     }
     
     .d-flex {
-        flex-direction: column; /* stack input and button vertically on small screens */
-        justify-content: center;
+        flex-direction: column; /* stack input and button vertically on small screens */        
         align-items: center;
+        gap: 10px;
         }
      }
 
@@ -129,8 +146,8 @@ p {
     <div class="container d-flex flex-column justify-content-center" style="height: 100vh;">
         <div class="text-center">
             <p class="typewriter"></p>
-            <div class="d-flex justify-content-center mt-4">
-                <input type="text" class="input-box" placeholder="">
+            <div class="d-flex justify-content-center mt-4 mid-wrapper">
+                <textarea oninput="autogrow(this)" type="text" id="input" class="input-box " maxlength="100" placeholder=""></textarea>
                 <button class="button ml-2" onclick="generateSynonym()">➤</button>
             </div>
             <p class="output-phrase mt-4 typewriter" id="outputPhrase"></p>
@@ -160,7 +177,7 @@ p {
         let output = getRandomString()
         let index2 = 0;
         let indexOutput = 0;
-        let paragraphElement = document.querySelector('input');
+        let paragraphElement = document.getElementById('input');
         const outputElement = document.getElementById('outputPhrase');
 
         function typeText() {
@@ -198,7 +215,7 @@ p {
         }
         
         function generateSynonym() {
-            const inputPhrase = document.querySelector('.input-box').value.trim();
+            const inputPhrase = document.querySelector('#input').value.trim();
 
             if (inputPhrase === "") {
                 return fillPhrasaurus()
@@ -237,6 +254,15 @@ p {
                 const outputElement = document.getElementById('outputPhrase');
                 outputElement.textContent = '"Error fetching synonym!"';
             });
+        }
+
+        // Dynamically increase height of input box
+        function autogrow(elm) {
+            let height = elm.scrollHeight;
+            if(height=='101') elm.style.height = '75px'  //Crude fix for bug where it would increase the height a lil
+            else elm.style.height = height + "px";
+            console.log(height)
+            
         }
     </script>
 </body>
