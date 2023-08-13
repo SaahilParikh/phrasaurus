@@ -15,10 +15,6 @@
             font-family: 'Dosis', sans-serif;
         }
 
-        h2 {
-            font-size: 3em;
-        }
-
         p {
             font-size: 1.5em;
         }
@@ -28,11 +24,10 @@
             word-wrap: break-word;
             resize: none;
             overflow: hidden;
+            max-width: 100%;
         }
 
         #input {
-            margin: 0 auto;
-            padding: 0;
             height: 75px;
             background-color: #48bf31;
             font-size: 3em;
@@ -40,6 +35,12 @@
             color: #FFFFFF;
             border: none;
             border-radius: 5px;
+        }
+
+        #outputPhrase {
+            white-space: normal; /* Allows text to wrap */
+            overflow-wrap: break-word; /* Breaks the word in case of long unbreakable strings (like URLs) */
+            overflow-x: auto; /* Shows a scrollbar if content overflows horizontally */
         }
 
         .button {
@@ -68,9 +69,26 @@
         }
 
         @media (max-width: 576px) {
+
+            .button {
+                width: 95%;        /* Sets the width of the button to 95% on small screens */
+                margin: 0 auto;    /* Centers the button */
+                display: block;    /* Makes the button block-level so it takes up the full width */
+            }
+
+            textarea {
+                font-size: 1.5em;
+            }
+
+            p {
+             font-size: 1em; /* adjust as required */
+            }
+
             .input-box {
                 width: 100%;
+                height: auto; /* adjusts height automatically */
                 margin-bottom: 10px;
+                padding: 10px; /* add padding for better appearance */
             }
 
             .d-flex {
@@ -172,6 +190,7 @@
             .then(data => {
                 const output = data.synonym || "Sorry, no synonym found!";
                 const outputElement = document.getElementById('outputPhrase');
+                outputElement.textContent = "";  // Clear out the existing text content
                 typeText(outputElement, output, 0);
             })
             .catch(error => {
