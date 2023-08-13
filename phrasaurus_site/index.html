@@ -23,7 +23,9 @@
             height: fit-content;
             word-wrap: break-word;
             resize: none;
-            overflow: hidden;
+            overflow: auto;
+            padding-left: 1%;
+            padding-right: 1%;
             max-width: 100%;
         }
 
@@ -84,7 +86,16 @@
             white-space: normal; /* Allows text to wrap */
             overflow-wrap: break-word; /* Breaks the word in case of long unbreakable strings (like URLs) */
             overflow-x: auto; /* Shows a scrollbar if content overflows horizontally */
-        }
+            background-color: #48bf31;
+            padding: 10px 15px; /* adjust as required */
+            border: none;
+            border-radius: 5px;
+            margin: 10px 0;
+            display: none; /* Hide by default */
+            max-width: 80%;  /* Adjust this to the maximum width you want */
+            min-width: 50%;  /* Adjust this to the minimum width you want */
+            width: auto;
+         }
 
         .button {
             background-color: #FF964F;
@@ -227,8 +238,10 @@ document.querySelector('.input-box').addEventListener('focus', function() {
 
         function fillPhrasaurus() {
             const outputElement = document.getElementById('outputPhrase');
+            outputElement.style.display = "none";
             outputElement.textContent = "";  // Clear out the existing text content
             typeText(outputElement, getRandomString(), 0);
+            outputElement.style.display = "inline-block"; // Show the element when starting to type
         }
 
 
@@ -239,6 +252,7 @@ document.querySelector('.input-box').addEventListener('focus', function() {
             const loadingSpinner = document.getElementById('loadingSpinner');
 
             outputElement.textContent = "";  // Clear out the existing text content
+            outputElement.style.display = "none";
 
             const inputPhrase = document.querySelector('#input').value.trim();
 
@@ -268,8 +282,9 @@ document.querySelector('.input-box').addEventListener('focus', function() {
             .then(data => {
 
                 const output = data.synonym || "Sorry, no synonym found!";
-                outputElement.textContent = "";  // Clear out the existing text content
+                outputElement.style.display = "inline-block"; // Show the element when starting to type
                 typeText(outputElement, output, 0);
+                
 
                 // Hide spinner and enable the button
                 searchButton.disabled = false;
@@ -278,6 +293,7 @@ document.querySelector('.input-box').addEventListener('focus', function() {
             })
             .catch(error => {
                 console.error("Error fetching synonym:", error);
+                outputElement.style.display = "inline-block"; // Show the element when starting to type
                 outputElement.textContent = 'Error fetching synonym!';
 
                 // Hide spinner and enable the button even in case of an error
