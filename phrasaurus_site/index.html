@@ -16,7 +16,7 @@
         }
 
         p {
-            font-size: 1.5em;
+            font-size: 2em;
         }
 
         textarea {
@@ -35,6 +35,11 @@
             color: #FFFFFF;
             border: none;
             border-radius: 5px;
+        }
+
+        /* For most modern browsers */
+        .input-box::placeholder {
+            opacity: 100%;
         }
 
         #outputPhrase {
@@ -124,9 +129,15 @@
         <div class="text-center">
             <div class="d-flex justify-content-center mt-4 mid-wrapper">
                 <textarea oninput="autogrow(this)" id="input" onload="fillInputBox()" class="input-box" maxlength="100" placeholder=""></textarea>
-                <button class="button ml-2" onclick="generateSynonym()">➤</button>
+                <button class="button ml-2" onclick="generateSynonym()" id="searchButton">
+                    <span id="buttonText">➤</span>
+                    <div class="spinner-grow spinner-grow-sm d-none" id="loadingSpinner" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </button>                
             </div>
             <p class="output-phrase mt-4 typewriter" id="outputPhrase" onload="fillPhrasaurus()"></p>
+              
         </div>
     </main>
 
@@ -141,8 +152,8 @@
             }
         });
 
-
-        const stringList = ["A minimalistic thesaurus for phrases", "A phrase synonym repository", "Phrase equivalent compendium", "A dinosaur that eats phrases"];
+        // Create more chances for the phrase 'A minimalistic thesaurus for phrases'
+        const stringList = ["A minimalistic thesaurus for phrases", "A minimalistic thesaurus for phrases", "A minimalistic thesaurus for phrases", "A minimalistic thesaurus for phrases", "A minimalistic thesaurus for phrases", "A phrase synonym repository", "Phrase equivalent compendium", "A dinosaur that eats phrases"];
 
         function getRandomString() {
             const randomIndex = Math.floor(Math.random() * stringList.length);
@@ -174,8 +185,27 @@
 
 
         function generateSynonym() {
+            const outputElement = document.getElementById('outputPhrase');
+            const searchButton = document.getElementById('searchButton');
+            const buttonText = document.getElementById('buttonText');
+            const loadingSpinner = document.getElementById('loadingSpinner');
+
+            outputElement.textContent = "";  // Clear out the existing text content
+
             const inputPhrase = document.querySelector('#input').value.trim();
+
+            // Disable the button and show the spinner
+            searchButton.disabled = true;
+            buttonText.style.display = 'none';
+            loadingSpinner.classList.remove('d-none');
+
             if (!inputPhrase) {
+
+                // Hide spinner and enable the button
+                searchButton.disabled = false;
+                buttonText.style.display = '';
+                loadingSpinner.classList.add('d-none');
+
                 return fillPhrasaurus();
             }
 
@@ -188,17 +218,27 @@
             })
             .then(response => response.json())
             .then(data => {
+
                 const output = data.synonym || "Sorry, no synonym found!";
-                const outputElement = document.getElementById('outputPhrase');
                 outputElement.textContent = "";  // Clear out the existing text content
                 typeText(outputElement, output, 0);
+
+                // Hide spinner and enable the button
+                searchButton.disabled = false;
+                buttonText.style.display = '';
+                loadingSpinner.classList.add('d-none');
             })
             .catch(error => {
                 console.error("Error fetching synonym:", error);
-                const outputElement = document.getElementById('outputPhrase');
                 outputElement.textContent = 'Error fetching synonym!';
+
+                // Hide spinner and enable the button even in case of an error
+                searchButton.disabled = false;
+                buttonText.style.display = '';
+                loadingSpinner.classList.add('d-none');
             });
         }
+
 
         function autogrow(elm) {
             // Set the height to a small value temporarily to reset the scroll height
@@ -207,8 +247,6 @@
             // Set the new height based on the scrollHeight
             elm.style.height = (elm.scrollHeight) + "px";
         }
-
-
 
         window.onload = function() {
             fillInputBox();
