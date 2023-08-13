@@ -136,8 +136,7 @@
                     </div>
                 </button>                
             </div>
-            <p class="output-phrase mt-4 typewriter" id="outputPhrase"></p>
-              
+            <p class="output-phrase mt-4 typewriter" id="outputPhrase" onclick="copyToClipboard()" title="Click to copy"></p>              
         </div>
     </main>
 
@@ -247,6 +246,25 @@
             // Set the new height based on the scrollHeight
             elm.style.height = (elm.scrollHeight) + "px";
         }
+
+        function copyToClipboard() {
+            const outputText = document.getElementById('outputPhrase').textContent;
+
+            const selection = window.getSelection();
+            const range = document.createRange();
+
+            range.selectNodeContents(outputPhrase); // Select the text of the outputPhrase element
+            selection.removeAllRanges();            // Clear any existing selections
+            selection.addRange(range);              // Add the new range to the selection
+
+            try {
+                document.execCommand('copy');       // Copy the selected content
+                selection.removeAllRanges();        // Clear the selection after copying
+            } catch (err) {
+                console.error('Unable to copy text', err);
+            }
+        }
+
 
         window.onload = function() {
             fillInputBox();
