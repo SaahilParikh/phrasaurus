@@ -96,7 +96,6 @@
             padding: 10px 15px; /* adjust as required */
             border: none;
             border-radius: 5px;
-            margin: 10px 0;
             display: none; /* Hide by default */
             max-width: 80%;  /* Adjust this to the maximum width you want */
             min-width: 50%;  /* Adjust this to the minimum width you want */
@@ -129,13 +128,17 @@
         }
 
         .justify-start {
-            justify-content: start!important;
+            justify-content: start;
         }
 
-        p.reveal-results {
+        p.before-reveal {
+            margin: 10px 0;
+        }
+
+        p.after-reveal {
             height: 100%;
-            margin: 0!important;
-            margin-bottom: 10px!important;
+            margin: 0;
+            margin-bottom: 10px;
         }
 
         @media (max-width: 576px) {
@@ -200,7 +203,7 @@
                 </div>
             </button>                
         </div>
-        <p class="output-phrase mt-4 typewriter" id="outputPhrase" onclick="copyToClipboard()" title="Click to copy"></p>              
+        <p class="output-phrase mt-4 before-reveal typewriter" id="outputPhrase" onclick="copyToClipboard()" title="Click to copy"></p>              
     </main>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
@@ -351,7 +354,9 @@ document.querySelector('.input-box').addEventListener('focus', function() {
             const container = document.querySelector('main.container')
 
             container.classList.add('justify-start')
-            outputPhrase.classList.add('reveal-results')
+            container.classList.remove('justify-content-center')
+            outputPhrase.classList.add('after-reveal')
+            outputPhrase.classList.remove('before-reveal')
         }
 
 
