@@ -15,6 +15,11 @@
             font-family: 'Dosis', sans-serif;
         }
 
+        .container {
+            align-items: center;
+            gap: 10px;
+        }
+
         p {
             font-size: 2em;
         }
@@ -37,49 +42,50 @@
             color: #FFFFFF;
             border: none;
             border-radius: 5px;
+            overflow: hidden;  /* hide scroll bar*/
         }
 
         /* For WebKit browsers like Safari and older versions of Chrome */
-.input-box::-webkit-input-placeholder {
-    opacity: 100%;
-}
+        .input-box::-webkit-input-placeholder {
+            opacity: 100%;
+        }
 
-/* For Firefox 19+ */
-.input-box::-moz-placeholder {
-    opacity: 100%;
-}
+        /* For Firefox 19+ */
+        .input-box::-moz-placeholder {
+            opacity: 100%;
+        }
 
-/* For Firefox 18- */
-.input-box:-moz-placeholder {
-    opacity: 100%;
-}
+        /* For Firefox 18- */
+        .input-box:-moz-placeholder {
+            opacity: 100%;
+        }
 
-/* For Internet Explorer 10-11 */
-.input-box:-ms-input-placeholder {
-    opacity: 100%;
-}
+        /* For Internet Explorer 10-11 */
+        .input-box:-ms-input-placeholder {
+            opacity: 100%;
+        }
 
-/* For most modern browsers including newer versions of Chrome, Firefox, and Edge */
-.input-box::placeholder {
-    opacity: 100%;
-}
+        /* For most modern browsers including newer versions of Chrome, Firefox, and Edge */
+        .input-box::placeholder {
+            opacity: 100%;
+        }
 
-/* This class defines the reduced opacity for the placeholder */
-.input-box.placeholder-reduced-opacity::-webkit-input-placeholder {
-    opacity: 0.5;
-}
-.input-box.placeholder-reduced-opacity::-moz-placeholder {
-    opacity: 0.5;
-}
-.input-box.placeholder-reduced-opacity:-moz-placeholder {
-    opacity: 0.5;
-}
-.input-box.placeholder-reduced-opacity:-ms-input-placeholder {
-    opacity: 0.5;
-}
-.input-box.placeholder-reduced-opacity::placeholder {
-    opacity: 0.5;
-}
+        /* This class defines the reduced opacity for the placeholder */
+        .input-box.placeholder-reduced-opacity::-webkit-input-placeholder {
+            opacity: 0.5;
+        }
+        .input-box.placeholder-reduced-opacity::-moz-placeholder {
+            opacity: 0.5;
+        }
+        .input-box.placeholder-reduced-opacity:-moz-placeholder {
+            opacity: 0.5;
+        }
+        .input-box.placeholder-reduced-opacity:-ms-input-placeholder {
+            opacity: 0.5;
+        }
+        .input-box.placeholder-reduced-opacity::placeholder {
+            opacity: 0.5;
+        }
 
 
         #outputPhrase {
@@ -120,6 +126,16 @@
             background-color: #FFDAB9;
             padding: 2px 5px;
             border-radius: 3px;
+        }
+
+        .justify-start {
+            justify-content: start!important;
+        }
+
+        p.reveal-results {
+            height: 100%;
+            margin: 0!important;
+            margin-bottom: 10px!important;
         }
 
         @media (max-width: 576px) {
@@ -175,18 +191,16 @@
 
 <body>
     <main class="container d-flex flex-column justify-content-center" style="height: 100vh;">
-        <div class="text-center">
-            <div class="d-flex justify-content-center mt-4 mid-wrapper">
-                <textarea oninput="autogrow(this)" id="input" class="input-box" maxlength="100" placeholder=""></textarea>
-                <button class="button ml-2" onclick="generateSynonym()" id="searchButton">
-                    <span id="buttonText">➤</span>
-                    <div class="spinner-grow spinner-grow-sm d-none" id="loadingSpinner" role="status">
-                        <span class="sr-only">Loading...</span>
-                    </div>
-                </button>                
-            </div>
-            <p class="output-phrase mt-4 typewriter" id="outputPhrase" onclick="copyToClipboard()" title="Click to copy"></p>              
+        <div class="d-flex justify-content-center mt-4 mid-wrapper text-center">
+            <textarea oninput="autogrow(this)" id="input" class="input-box" maxlength="100" placeholder=""></textarea>
+            <button class="button ml-2" onclick="generateSynonym()" id="searchButton">
+                <span id="buttonText">➤</span>
+                <div class="spinner-grow spinner-grow-sm d-none" id="loadingSpinner" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+            </button>                
         </div>
+        <p class="output-phrase mt-4 typewriter" id="outputPhrase" onclick="copyToClipboard()" title="Click to copy"></p>              
     </main>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
@@ -290,8 +304,10 @@ document.querySelector('.input-box').addEventListener('focus', function() {
                 searchButton.disabled = false;
                 buttonText.style.display = '';
                 loadingSpinner.classList.add('d-none');
+                changeView()
             })
             .catch(error => {
+                changeView() // Remove in production
                 console.error("Error fetching synonym:", error);
                 outputElement.style.display = "inline-block"; // Show the element when starting to type
                 outputElement.textContent = 'Error fetching synonym!';
@@ -328,6 +344,16 @@ document.querySelector('.input-box').addEventListener('focus', function() {
             } catch (err) {
                 console.error('Unable to copy text', err);
             }
+        }
+
+        function changeView() {
+            console.log('called')
+            const output = document.getElementById('outputPhrase')
+            const container = document.querySelector('main.container')
+            console.log(container)
+
+            container.classList.add('justify-start')
+            outputPhrase.classList.add('reveal-results')
         }
 
 
