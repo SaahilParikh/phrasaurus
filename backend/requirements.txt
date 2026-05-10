@@ -1,0 +1,13 @@
+# Runtime dependencies.
+#
+# NOTE: boto3 is preinstalled in the AWS Lambda Python runtime — we do NOT
+# need to bundle it into the deployment zip. It is declared here so local
+# development + tests can `pip install -r requirements.txt` and get a
+# working environment. The Makefile's `package` target strips boto3 and
+# its transitive deps (botocore, s3transfer, jmespath, urllib3) from the
+# deployment zip because Lambda provides them.
+#
+# No other runtime deps are needed — Bedrock auth uses the Lambda
+# execution role, and we invoke the Converse API directly via boto3.
+
+boto3>=1.34.0,<2.0.0
