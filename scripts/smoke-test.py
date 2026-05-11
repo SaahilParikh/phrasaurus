@@ -48,7 +48,15 @@ def _check_preflight(url: str) -> bool:
     """Assert that OPTIONS returns CORS headers. Catches misconfigured
     Function URLs / API Gateway routes."""
     print(f"→ OPTIONS {url}")
-    request = urllib.request.Request(url, method="OPTIONS")
+    request = urllib.request.Request(
+        url,
+        method="OPTIONS",
+        headers={
+            "Origin": "https://smoke.example",
+            "Access-Control-Request-Method": "POST",
+            "Access-Control-Request-Headers": "content-type",
+        },
+    )
     try:
         with urllib.request.urlopen(request, timeout=TIMEOUT_SECONDS) as response:
             status = response.status
