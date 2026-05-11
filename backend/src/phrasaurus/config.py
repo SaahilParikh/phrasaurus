@@ -39,6 +39,12 @@ class Config:
     # every call and causes unexpected ThrottlingException.
     max_tokens: int
 
+    # Optional: apply a Bedrock Guardrail to every request. Disabled when
+    # either field is empty. Pin to a numbered version in production; using
+    # DRAFT lets unreviewed edits take effect immediately.
+    guardrail_id: str
+    guardrail_version: str
+
     @classmethod
     def from_env(cls) -> Config:
         """Build a Config from process environment. Called once at cold start."""
@@ -49,4 +55,6 @@ class Config:
                 "us.anthropic.claude-haiku-4-5-20251001-v1:0",
             ),
             max_tokens=int(os.environ.get("BEDROCK_MAX_TOKENS", "60")),
+            guardrail_id=os.environ.get("BEDROCK_GUARDRAIL_ID", ""),
+            guardrail_version=os.environ.get("BEDROCK_GUARDRAIL_VERSION", ""),
         )

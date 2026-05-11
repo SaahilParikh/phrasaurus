@@ -12,6 +12,8 @@ def test_from_env_uses_defaults_when_unset(monkeypatch: pytest.MonkeyPatch) -> N
         "AWS_REGION",
         "BEDROCK_MODEL_ID",
         "BEDROCK_MAX_TOKENS",
+        "BEDROCK_GUARDRAIL_ID",
+        "BEDROCK_GUARDRAIL_VERSION",
     ):
         monkeypatch.delenv(var, raising=False)
 
@@ -22,18 +24,24 @@ def test_from_env_uses_defaults_when_unset(monkeypatch: pytest.MonkeyPatch) -> N
     # out of the box in the common case.
     assert cfg.bedrock_model_id.startswith("us.")
     assert cfg.max_tokens == 60
+    assert cfg.guardrail_id == ""
+    assert cfg.guardrail_version == ""
 
 
 def test_from_env_overrides(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("AWS_REGION", "eu-west-1")
     monkeypatch.setenv("BEDROCK_MODEL_ID", "us.amazon.nova-micro-v1:0")
     monkeypatch.setenv("BEDROCK_MAX_TOKENS", "120")
+    monkeypatch.setenv("BEDROCK_GUARDRAIL_ID", "gd-abc")
+    monkeypatch.setenv("BEDROCK_GUARDRAIL_VERSION", "3")
 
     cfg = Config.from_env()
 
     assert cfg.aws_region == "eu-west-1"
     assert cfg.bedrock_model_id == "us.amazon.nova-micro-v1:0"
     assert cfg.max_tokens == 120
+    assert cfg.guardrail_id == "gd-abc"
+    assert cfg.guardrail_version == "3"
 
 
 def test_config_is_immutable() -> None:

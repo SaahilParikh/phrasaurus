@@ -100,6 +100,8 @@ def get_synonym(
     region: str,
     model_id: str,
     max_tokens: int,
+    guardrail_id: str = "",
+    guardrail_version: str = "",
 ) -> str:
     """Call Bedrock Converse and return the synonym string.
 
@@ -122,14 +124,23 @@ def get_synonym(
     client = boto3.client("bedrock-runtime", region_name=region, config=_RETRY_CONFIG)
 
     try:
-        response = client.converse(
-            modelId=model_id,
-            system=build_system_prompts(),
-            messages=build_messages(phrase),
+        converse_kwargs: dict[str, Any] = {
+            "modelId": model_id,
+            "system": build_system_prompts(),
+            "messages": build_messages(phrase),
             # @secure_recommendation: Always set maxTokens explicitly. Leaving
             # unset reserves the model's full max against quota on every call.
-            inferenceConfig={"maxTokens": max_tokens, "temperature": 0.7},
-        )
+            "inferenceConfig": {"maxTokens": max_tokens, "temperature": 0.7},
+        }
+        if guardrail_id and guardrail_version:
+            # @secure_recommendation: Apply the configured Bedrock Guardrail
+            # to every request — filters harmful content and prompt injection.
+            converse_kwargs["guardrailConfig"] = {
+                "guardrailIdentifier": guardrail_id,
+                "guardrailVersion": guardrail_version,
+                "trace": "disabled",  # Never enable in prod — exposes PII in traces.
+            }
+        response = client.converse(**converse_kwargs)
     except (ClientError, BotoCoreError) as exc:
         raise BedrockClientError(f"Bedrock Converse failed: {exc}") from exc
 

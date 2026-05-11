@@ -115,6 +115,8 @@ def _produce_synonym(phrase: str) -> str:
         region=_CONFIG.aws_region,
         model_id=_CONFIG.bedrock_model_id,
         max_tokens=_CONFIG.max_tokens,
+        guardrail_id=_CONFIG.guardrail_id,
+        guardrail_version=_CONFIG.guardrail_version,
     )
 
 

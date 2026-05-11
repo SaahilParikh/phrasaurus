@@ -22,6 +22,7 @@ locals {
 
   bedrock_model_arn   = "arn:aws:bedrock:*::foundation-model/anthropic.claude-haiku-4-5-20251001-v1:0"
   bedrock_profile_arn = "arn:aws:bedrock:*:${local.account_id}:inference-profile/us.anthropic.claude-haiku-4-5-20251001-v1:0"
+  guardrail_arn       = "arn:aws:bedrock:us-east-1:534886060250:guardrail/1fxl0slx7xm2"
 
   lambda_arn = "arn:aws:lambda:${local.region}:${local.account_id}:function:${local.lambda_name}"
 }
@@ -38,11 +39,18 @@ resource "aws_iam_role_policy" "lambda_bedrock_invoke" {
 
   policy = jsonencode({
     Version = "2012-10-17"
-    Statement = [{
-      Effect   = "Allow"
-      Action   = "bedrock:InvokeModel"
-      Resource = [local.bedrock_model_arn, local.bedrock_profile_arn]
-    }]
+    Statement = [
+      {
+        Effect   = "Allow"
+        Action   = "bedrock:InvokeModel"
+        Resource = [local.bedrock_model_arn, local.bedrock_profile_arn]
+      },
+      {
+        Effect   = "Allow"
+        Action   = "bedrock:ApplyGuardrail"
+        Resource = local.guardrail_arn
+      },
+    ]
   })
 }
 
