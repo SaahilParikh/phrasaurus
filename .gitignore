@@ -55,3 +55,18 @@ yarn-error.log*
 .env.local
 *.pem
 *.key
+
+# ---- Terraform ----
+# Local init dirs and ephemeral plan files — lock file IS committed.
+**/.terraform/
+*.tfplan
+tfplan
+*.tfstate
+*.tfstate.*
+crash.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraformrc
+terraform.rc

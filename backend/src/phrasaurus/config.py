@@ -52,7 +52,7 @@ class Config:
             aws_region=os.environ.get("AWS_REGION", "us-east-1"),
             bedrock_model_id=os.environ.get(
                 "BEDROCK_MODEL_ID",
-                "us.anthropic.claude-3-5-haiku-20241022-v1:0",
+                "us.anthropic.claude-haiku-4-5-20251001-v1:0",
             ),
             max_tokens=int(os.environ.get("BEDROCK_MAX_TOKENS", "60")),
             cors_allowed_origin=os.environ.get("CORS_ALLOWED_ORIGIN", "*"),

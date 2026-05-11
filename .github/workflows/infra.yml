@@ -1,0 +1,89 @@
+name: infra
+
+on:
+  pull_request:
+    paths: ['infra/**', '.github/workflows/infra.yml']
+  push:
+    branches: [main]
+    paths: ['infra/**', '.github/workflows/infra.yml']
+
+# One apply at a time; cancel stacked plans on the same PR.
+concurrency:
+  group: infra-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+  id-token: write      # required for AWS OIDC
+  pull-requests: write # required to post the plan as a PR comment
+
+env:
+  AWS_REGION: us-east-1
+  TF_ROLE_ARN: arn:aws:iam::534886060250:role/phrasaurus-terraform-ci
+  TERRAFORM_VERSION: 1.15.2
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: infra
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TERRAFORM_VERSION }}
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.TF_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Check formatting
+        run: terraform fmt -check -diff
+
+      - name: Init
+        run: terraform init -input=false
+
+      - name: Validate
+        run: terraform validate
+
+      - name: Plan
+        id: plan
+        run: terraform plan -input=false -no-color -out=tfplan
+        continue-on-error: ${{ github.event_name == 'pull_request' }}
+
+      - name: Render plan as PR comment
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { execSync } = require('node:child_process');
+            const plan = execSync('terraform show -no-color tfplan', {
+              cwd: 'infra', encoding: 'utf8'
+            });
+            const body = [
+              '### Terraform plan',
+              '<details><summary>Show plan</summary>',
+              '',
+              '```terraform',
+              plan.slice(0, 60000), // GitHub comment length cap
+              '```',
+              '',
+              '</details>',
+            ].join('\n');
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body,
+            });
+
+      - name: Fail if plan failed
+        if: steps.plan.outcome == 'failure'
+        run: exit 1
+
+      - name: Apply
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: terraform apply -input=false -no-color tfplan

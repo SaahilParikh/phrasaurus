@@ -12,7 +12,7 @@
  */
 
 const DEFAULTS = Object.freeze({
-  apiUrl: 'https://phrasaurus.com/api/v1',
+  apiUrl: 'https://m45jx5yypttcreo2g5gfsghxoq0rtdky.lambda-url.us-east-1.on.aws/',
   typewriterDelayMs: 10,
   requestTimeoutMs: 15000,
 });
