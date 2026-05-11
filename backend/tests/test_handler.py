@@ -57,9 +57,8 @@ def test_post_returns_200_with_synonym_and_cors_headers() -> None:
 
     headers = response["headers"]
     assert headers["Content-Type"] == "application/json"
-    assert headers["Access-Control-Allow-Origin"] == "*"
-    assert "POST" in headers["Access-Control-Allow-Methods"]
-    # Defence-in-depth: no-store so intermediate caches don't retain.
+    # CORS is owned by Function URL config, not by the handler.
+    assert "Access-Control-Allow-Origin" not in headers
     assert headers["Cache-Control"] == "no-store"
 
 
@@ -100,18 +99,12 @@ def test_handler_passes_config_values_through_to_bedrock() -> None:
 # ---------------------------------------------------------------------------
 
 
-def test_options_preflight_returns_204_with_cors() -> None:
-    event = _event(method="OPTIONS")
-
     response = handler_module.lambda_handler(event, object())
 
     assert response["statusCode"] == 204
     assert response["body"] == ""
     assert "Access-Control-Allow-Origin" in response["headers"]
 
-
-def test_options_preflight_v2_shape() -> None:
-    event = _event(method="OPTIONS", v2=True)
 
     response = handler_module.lambda_handler(event, object())
 

@@ -87,7 +87,6 @@ All tunables are environment variables.
 | `AWS_REGION`           | `us-east-1`                                          | Region hosting the Bedrock endpoint           |
 | `BEDROCK_MODEL_ID`     | `us.anthropic.claude-3-5-haiku-20241022-v1:0`        | Bedrock model ID or cross-region profile      |
 | `BEDROCK_MAX_TOKENS`   | `60`                                                 | Cap on tokens generated per call              |
-| `CORS_ALLOWED_ORIGIN`  | `*`                                                  | `Access-Control-Allow-Origin` header value    |
 
 ### Choosing a model
 

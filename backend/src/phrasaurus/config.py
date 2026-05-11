@@ -39,11 +39,6 @@ class Config:
     # every call and causes unexpected ThrottlingException.
     max_tokens: int
 
-    # Origin permitted by the CORS preflight. Tighten to your site's domain
-    # in production; defaults to "*" so local dev works out of the box.
-    # @secure_recommendation: Restrict to the known frontend origin in prod
-    # to limit CSRF-style abuse from arbitrary websites.
-    cors_allowed_origin: str
 
     @classmethod
     def from_env(cls) -> Config:
@@ -55,5 +50,4 @@ class Config:
                 "us.anthropic.claude-haiku-4-5-20251001-v1:0",
             ),
             max_tokens=int(os.environ.get("BEDROCK_MAX_TOKENS", "60")),
-            cors_allowed_origin=os.environ.get("CORS_ALLOWED_ORIGIN", "*"),
         )

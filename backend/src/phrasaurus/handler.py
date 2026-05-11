@@ -41,10 +41,6 @@ def lambda_handler(event: dict[str, Any], context: object) -> dict[str, Any]:
     """
     logger.info("request_received", extra={"event_keys": list(event.keys())})
 
-    # CORS preflight — return early with the permissive headers.
-    if _is_preflight(event):
-        return _respond(204, body=None)
-
     try:
         phrase = _extract_phrase(event)
         synonym = _produce_synonym(phrase)
@@ -70,13 +66,6 @@ def lambda_handler(event: dict[str, Any], context: object) -> dict[str, Any]:
 # Internals
 # ---------------------------------------------------------------------------
 
-
-def _is_preflight(event: dict[str, Any]) -> bool:
-    """Detect an OPTIONS preflight across REST v1 and HTTP API v2 event shapes."""
-    method = event.get("httpMethod") or event.get("requestContext", {}).get("http", {}).get(
-        "method"
-    )
-    return bool(method == "OPTIONS")
 
 
 def _extract_phrase(event: dict[str, Any]) -> str:
@@ -144,11 +133,10 @@ def _respond(
     if log_detail:
         logger.info("response_detail", extra={"status": status, "detail": log_detail})
 
+    # CORS is owned by the Lambda Function URL's cors config — emitting
+    # Access-Control-* here would produce duplicate headers that browsers reject.
     headers = {
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": _CONFIG.cors_allowed_origin,
-        "Access-Control-Allow-Methods": "POST, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type",
         # @secure_recommendation: no-store prevents intermediate caches from
         # retaining responses that may contain user-specific phrasing.
         "Cache-Control": "no-store",
