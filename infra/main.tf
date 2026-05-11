@@ -4,8 +4,11 @@
 
 data "aws_caller_identity" "current" {}
 
-data "aws_iam_openid_connect_provider" "github" {
-  url = "https://token.actions.githubusercontent.com"
+# OIDC provider ARN is fully determined by the account ID, so we construct it
+# rather than using a data source. Avoids needing iam:ListOpenIDConnectProviders
+# on the terraform-ci role.
+locals {
+  github_oidc_provider_arn = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:oidc-provider/token.actions.githubusercontent.com"
 }
 
 # Bedrock model ARNs Terraform doesn't manage — referenced for the IAM policy.
@@ -115,7 +118,7 @@ resource "aws_iam_role" "github_deploy" {
     Version = "2012-10-17"
     Statement = [{
       Effect    = "Allow"
-      Principal = { Federated = data.aws_iam_openid_connect_provider.github.arn }
+      Principal = { Federated = local.github_oidc_provider_arn }
       Action    = "sts:AssumeRoleWithWebIdentity"
       Condition = {
         StringEquals = {

@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths: ['backend/**', 'frontend/src/**', '.github/workflows/deploy.yml']
-  workflow_dispatch: # allow manual redeploys
+  workflow_dispatch:
 
 concurrency:
   group: deploy-main
@@ -23,13 +23,30 @@ env:
   FRONTEND_BUCKET: phrasaurus.com
 
 jobs:
-  backend:
+  # Detect which subtrees changed so we only run the relevant deploy jobs.
+  # Manual dispatch runs both.
+  changes:
     runs-on: ubuntu-latest
-    if: |
-      github.event_name == 'workflow_dispatch' ||
-      contains(toJSON(github.event.commits.*.modified), 'backend/') ||
-      contains(toJSON(github.event.commits.*.added), 'backend/') ||
-      contains(toJSON(github.event.commits.*.removed), 'backend/')
+    outputs:
+      backend: ${{ steps.filter.outputs.backend }}
+      frontend: ${{ steps.filter.outputs.frontend }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            backend:
+              - 'backend/**'
+              - '.github/workflows/deploy.yml'
+            frontend:
+              - 'frontend/src/**'
+              - '.github/workflows/deploy.yml'
+
+  backend:
+    needs: changes
+    if: needs.changes.outputs.backend == 'true' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
@@ -89,12 +106,9 @@ jobs:
         run: python scripts/smoke-test.py "${{ steps.url.outputs.url }}"
 
   frontend:
+    needs: changes
+    if: needs.changes.outputs.frontend == 'true' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
-    if: |
-      github.event_name == 'workflow_dispatch' ||
-      contains(toJSON(github.event.commits.*.modified), 'frontend/src/') ||
-      contains(toJSON(github.event.commits.*.added), 'frontend/src/') ||
-      contains(toJSON(github.event.commits.*.removed), 'frontend/src/')
     steps:
       - uses: actions/checkout@v4
 
