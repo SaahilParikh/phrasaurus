@@ -1,6 +1,6 @@
 # Phrasaurus
 
-Live at [phrasaurus.com](phrasaurus.com)!
+Live at [phrasaurus.com](https://phrasaurus.com)!
 
 A minimalistic thesaurus for phrases. Type a word or phrase, get back a
 synonymous phrase.
