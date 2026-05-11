@@ -67,7 +67,6 @@ def lambda_handler(event: dict[str, Any], context: object) -> dict[str, Any]:
 # ---------------------------------------------------------------------------
 
 
-
 def _extract_phrase(event: dict[str, Any]) -> str:
     """Pull ``phrase`` out of the request body with full validation.
 

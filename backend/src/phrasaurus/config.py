@@ -39,7 +39,6 @@ class Config:
     # every call and causes unexpected ThrottlingException.
     max_tokens: int
 
-
     @classmethod
     def from_env(cls) -> Config:
         """Build a Config from process environment. Called once at cold start."""

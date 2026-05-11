@@ -95,23 +95,6 @@ def test_handler_passes_config_values_through_to_bedrock() -> None:
 
 
 # ---------------------------------------------------------------------------
-# Preflight
-# ---------------------------------------------------------------------------
-
-
-    response = handler_module.lambda_handler(event, object())
-
-    assert response["statusCode"] == 204
-    assert response["body"] == ""
-    assert "Access-Control-Allow-Origin" in response["headers"]
-
-
-    response = handler_module.lambda_handler(event, object())
-
-    assert response["statusCode"] == 204
-
-
-# ---------------------------------------------------------------------------
 # Validation — 400s
 # ---------------------------------------------------------------------------
 
